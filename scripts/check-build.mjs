@@ -8,3 +8,18 @@ for(const file of html){const text=await readFile(file,'utf8');assert.match(text
 for(const route of ['index.html','about/index.html','now/index.html','projects/index.html','blog/index.html','emulation/index.html','transparency/index.html','404.html','rss.xml','sitemap-index.xml'])assert.ok(files.includes(join(root.pathname,route)),`Missing ${route}`);
 const rss=await readFile(new URL('rss.xml',root),'utf8');assert.match(rss,/<item>/);assert.match(rss,/https:\/\/almo0aya\.online\/blog\/a-notebook-for-understanding\//);
 console.log(`PASS: ${html.length} HTML pages; ${links} internal references; metadata, headings, RSS, sitemap, and zero client JavaScript.`);
+
+// Every visible name must carry the zero highlight; metadata/URLs stay plain.
+let brandedNames = 0;
+for (const file of html) {
+  const body = (await readFile(file, 'utf8')).split('<body>')[1].split('</body>')[0];
+  const visible = body.replace(/<[^>]*>/g, '');
+  const names = (visible.match(/almo0aya/g) || []).length;
+  const zeroes = (body.match(/<span class="brand-zero">0<\/span>/g) || []).length;
+  assert.equal(zeroes, names, `${file}: every visible name has exactly one highlighted zero`);
+  assert.ok(names >= 2, `${file}: header and footer names retained`);
+  assert.match(body, /aria-label="almo0aya home"/);
+  brandedNames += names;
+}
+assert.ok(!rss.includes('brand-zero'), 'RSS remains plain text');
+console.log(`PASS: all ${brandedNames} visible name references have one amber zero; accessible name and plain RSS retained.`);
