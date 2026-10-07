@@ -10,7 +10,7 @@ export default {
       if (excluded.has(parent.tagName) || parent.properties?.className?.includes('brand-name')) return;
     }
     ctx.replaceNode(node, node.value.split('almo0aya').flatMap((part, i) => i
-      ? [span('brand-name', [text('almo'), span('brand-zero', [text('0')]), text('aya')]), text(part)]
+      ? [span('brand-name', [text('almo'), span('brand-zero', [span('zero-real', [text('0')]), { ...span('zero-art', []), properties: { className: ['zero-art'], ariaHidden: 'true' } }]), text('aya')]), text(part)]
       : [text(part)]));
   },
 };

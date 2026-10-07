@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node scripts/check-build.mjs && node scripts/check-brand.mjs",
+    "test": "node scripts/check-build.mjs && node scripts/check-brand.mjs && node scripts/check-signal.mjs",
     "verify": "npm run check && npm run build && npm test"
   },
   "engines": {
