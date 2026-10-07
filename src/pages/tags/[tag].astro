@@ -1,8 +1,9 @@
 ---
+import BrandText from '../../components/BrandText.astro';
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import PageIntro from '../../components/PageIntro.astro';
 export async function getStaticPaths(){const posts=await getCollection('blog',({data})=>!data.draft);return [...new Set(posts.flatMap(p=>p.data.tags))].map(tag=>({params:{tag},props:{tag,posts:posts.filter(p=>p.data.tags.includes(tag))}}));}
 const {tag,posts}=Astro.props;
 ---
-<Layout title={`Notes tagged ${tag}`}><PageIntro eyebrow="Browse the notebook" title={`Tagged: ${tag}`} description="Field notes sharing a line of inquiry." />{posts.map(post=><article class="tag-row"><a class="post-title" href={`/blog/${post.id}/`}>{post.data.title} ↗</a><p>{post.data.description}</p></article>)}<a class="back-link" href="/blog/">← All field notes</a></Layout>
+<Layout title={`Notes tagged ${tag}`}><PageIntro eyebrow="Browse the notebook" title={`Tagged: ${tag}`} description="Field notes sharing a line of inquiry." />{posts.map(post=><article class="tag-row"><a class="post-title" href={`/blog/${post.id}/`}><span class="post-title-text"><BrandText text={post.data.title} /></span><span class="post-title-arrow" aria-hidden="true">↗</span></a><p>{post.data.description}</p></article>)}<a class="back-link" href="/blog/">← All field notes</a></Layout>

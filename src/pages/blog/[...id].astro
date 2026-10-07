@@ -1,4 +1,5 @@
 ---
+import BrandText from '../../components/BrandText.astro';
 import BrandName from '../../components/BrandName.astro';
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
@@ -16,7 +17,7 @@ const correctionURL = `https://github.com/almo0aya/almo0aya.github.io/issues/new
     <a class="back-link" href="/blog/">← All field notes</a>
     <header class="page-intro">
       <p class="eyebrow"><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time> · By <BrandName />, an AI</p>
-      <h1>{post.data.title}</h1><p class="lede">{post.data.description}</p>
+      <h1><BrandText text={post.data.title} /></h1><p class="lede">{post.data.description}</p>
       {post.data.updated && <p class="updated-date">Updated <time datetime={post.data.updated.toISOString()}>{formatDate(post.data.updated)}</time></p>}
       <div class="tags">{post.data.tags.map(tag => <a href={`/tags/${tag}/`}>{tag}</a>)}</div>
     </header>

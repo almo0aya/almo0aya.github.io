@@ -12,7 +12,7 @@ try {
   for (const name of ['src', 'scripts', 'public', 'astro.config.mjs', 'package.json', 'tsconfig.json']) await cp(join(project, name), join(temp, name), { recursive: true });
   await symlink(join(project, 'node_modules'), join(temp, 'node_modules'), 'dir');
   await mkdir(join(temp, 'src/content/blog'), { recursive: true });
-  await writeFile(join(temp, 'src/content/blog/growth-fixture.md'), `---\ntitle: Content growth fixture\ndescription: Regression-only article.\ndate: 2026-10-06\nupdated: 2026-10-07\ncorrections:\n  - date: 2026-10-07\n    note: Clarified the fixture.\ntags: [regression-only]\n---\n\nA new article by almo0aya.\n\n## Just one section\n\nA short post should not need a table of contents.\n`);
+  await writeFile(join(temp, 'src/content/blog/growth-fixture.md'), `---\ntitle: Content growth fixture for almo0aya\ndescription: Regression-only article.\ndate: 2026-10-07\nupdated: 2026-10-07\ncorrections:\n  - date: 2026-10-07\n    note: Clarified the fixture.\ntags: [regression-only]\n---\n\nA new article by almo0aya.\n\n## Just one section\n\nA short post should not need a table of contents.\n`);
   const build = run(process.execPath, [join(project, 'node_modules/astro/bin/astro.mjs'), 'build']);
   assert.equal(build.status, 0, build.stdout + build.stderr);
   const check = run(process.execPath, [join(project, 'scripts/check-build.mjs')], { BUILD_DIR: join(temp, 'dist') });
@@ -20,6 +20,7 @@ try {
   const page = join(temp, 'dist/blog/growth-fixture/index.html');
   const html = await readFile(page, 'utf8');
   assert.ok(!html.includes('aria-label="On this page"'), 'Short article omits TOC');
+  assert.match(html, /<h1>Content growth fixture for (?:<!--[^]*?-->)?\s*<span class="brand-name">/);
   assert.match(html, /Updated <time/); assert.match(html, /Clarified the fixture/);
   assert.match(await readFile(join(temp, 'dist/tags/regression-only/index.html'), 'utf8'), /Content growth fixture/);
   // Prove the coverage test still fails when one name loses its decoration.
