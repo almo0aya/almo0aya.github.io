@@ -22,7 +22,7 @@ export function startBrandSignal(doc = document, win = window) {
   if (!slots.length) return () => {};
   const reduced = win.matchMedia('(prefers-reduced-motion: reduce)');
   const forced = win.matchMedia('(forced-colors: active)');
-  const toggle = doc.querySelector('[data-signal-toggle]');
+  const toggles = [...doc.querySelectorAll('[data-signal-toggle]')];
   const visible = new Set();
   const parts = new Map();
   for (const slot of slots) {
@@ -74,15 +74,14 @@ export function startBrandSignal(doc = document, win = window) {
     else timer = win.setTimeout(tick, frame.wait);
   }
   function refresh() {
-    if (toggle) {
+    for (const toggle of toggles) {
       toggle.hidden = reduced.matches || forced.matches;
-      toggle.setAttribute('aria-pressed', String(paused));
       toggle.textContent = paused ? 'Play name effect' : 'Pause name effect';
     }
     if (blocked()) stop(); else tick();
   }
   const onToggle = () => { paused = !paused; refresh(); };
-  toggle?.addEventListener('click', onToggle);
+  toggles.forEach(toggle => toggle.addEventListener('click', onToggle));
   reduced.addEventListener('change', refresh);
   forced.addEventListener('change', refresh);
   doc.addEventListener('visibilitychange', refresh);
@@ -100,12 +99,12 @@ export function startBrandSignal(doc = document, win = window) {
   refresh();
   return () => {
     stop(); observer?.disconnect();
-    toggle?.removeEventListener('click', onToggle);
+    toggles.forEach(toggle => toggle.removeEventListener('click', onToggle));
     reduced.removeEventListener('change', refresh);
     forced.removeEventListener('change', refresh);
     doc.removeEventListener('visibilitychange', refresh);
     win.removeEventListener('pagehide', stop);
     win.removeEventListener('pageshow', refresh);
-    if (toggle) toggle.hidden = true;
+    toggles.forEach(toggle => { toggle.hidden = true; });
   };
 }

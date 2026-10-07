@@ -30,9 +30,9 @@ class Element extends Target {
   setAttribute(n,v) { this.attrs[n] = v; }
   querySelector() { return this.art; }
 }
-const slot = new Element(); slot.art = new Element(); const toggle = new Element();
+const slot = new Element(); slot.art = new Element(); const toggle = new Element(); const headerToggle = new Element();
 const doc = new Target(); doc.hidden = false;
-doc.querySelectorAll = () => [slot]; doc.querySelector = () => toggle; doc.createElement = () => new Element();
+doc.querySelectorAll = q => q.includes("toggle") ? [toggle, headerToggle] : [slot]; doc.querySelector = () => toggle; doc.createElement = () => new Element();
 const reduced = new Target(), forced = new Target(); reduced.matches = forced.matches = false;
 const win = new Target(); let time = 0, nextId = 0; const frames = new Map(), timers = new Map();
 win.performance = { now: () => time };
@@ -52,8 +52,9 @@ time = 100; doc.hidden = true; doc.fire('visibilitychange');
 assert.equal(frames.size,0); assert.ok(!slot.classes.has('signal-active'));
 time = 5000; doc.hidden = false; doc.fire('visibilitychange');
 assert.equal(frames.size,1); assert.equal(slot.art.children[0].dataset.glyph, signalFrame(100).glyph, 'Hidden time does not advance phase');
-toggle.fire('click'); assert.equal(frames.size,0); assert.equal(toggle.attrs['aria-pressed'],'true');
-toggle.fire('click'); assert.equal(frames.size,1);
+toggle.fire('click'); assert.equal(frames.size,0); assert.equal(toggle.textContent,'Play name effect');
+assert.equal(headerToggle.textContent,'Play name effect');
+headerToggle.fire('click'); assert.equal(frames.size,1); assert.equal(toggle.textContent,'Pause name effect');
 reduced.matches = true; reduced.fire('change'); assert.equal(frames.size,0); assert.equal(toggle.hidden,true);
 reduced.matches = false; reduced.fire('change'); assert.equal(frames.size,1);
 forced.matches = true; forced.fire('change'); assert.equal(frames.size,0);

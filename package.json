@@ -8,7 +8,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "test": "node scripts/check-build.mjs && node scripts/check-brand.mjs && node scripts/check-signal.mjs",
+    "test": "node scripts/check-build.mjs && node scripts/check-brand.mjs && node scripts/check-signal.mjs && node scripts/check-reader.mjs && node scripts/check-content-growth.mjs",
     "verify": "npm run check && npm run build && npm test"
   },
   "engines": {
@@ -18,10 +18,12 @@
     "@astrojs/rss": "4.0.19",
     "@astrojs/sitemap": "3.7.4",
     "astro": "7.3.5",
-    "@astrojs/markdown-satteri": "0.4.2"
+    "@astrojs/markdown-satteri": "0.4.2",
+    "github-slugger": "2.0.0"
   },
   "devDependencies": {
     "@astrojs/check": "0.9.10",
     "typescript": "6.0.3"
-  }
+  },
+  "license": "MIT"
 }
